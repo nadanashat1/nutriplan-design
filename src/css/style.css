@@ -1,0 +1,211 @@
+/* ================================================================
+   NutriPlan — Custom Styles
+   (Supplements the Tailwind-generated index.css)
+   ================================================================ */
+
+/* ── Sidebar responsive behavior ── */
+@media (max-width: 768px) {
+  #sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  #sidebar.sidebar-open {
+    transform: translateX(0);
+  }
+
+  #main-content {
+    margin-left: 0 !important;
+  }
+
+  #header-menu-btn {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 769px) {
+  #sidebar {
+    transform: translateX(0) !important;
+  }
+
+  #header-menu-btn {
+    display: none;
+  }
+
+  #sidebar-close-btn {
+    display: none;
+  }
+}
+
+/* Sidebar overlay */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 35;
+  backdrop-filter: blur(2px);
+}
+
+.sidebar-overlay.active {
+  display: block;
+}
+
+/* ── Header menu button ── */
+#header-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  color: #374151;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background 0.15s;
+}
+
+#header-menu-btn:hover {
+  background: #f3f4f6;
+}
+
+/* ── Sidebar close button ── */
+#sidebar-close-btn {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  font-size: 1.1rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
+}
+
+#sidebar-close-btn:hover {
+  color: #111827;
+  background: #f3f4f6;
+}
+
+/* ── Recipe grid responsive ── */
+@media (max-width: 1280px) {
+  #recipes-grid.grid-cols-4 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1024px) {
+  #recipes-grid.grid-cols-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #categories-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  #recipes-grid.grid-cols-4 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  #categories-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  #search-filters-section,
+  #meal-categories-section,
+  #all-recipes-section,
+  #products-section,
+  #foodlog-section,
+  #meal-details {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* ── Ingredient checkbox ── */
+.ingredient-checkbox:checked + span {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+/* ── Smooth section transitions ── */
+section {
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Loading overlay transition ── */
+#app-loading-overlay {
+  transition: opacity 0.4s ease;
+}
+
+/* ── Meal detail hero ── */
+#meal-details .relative.h-80 img,
+#meal-details .relative.h-96 img {
+  transition: opacity 0.4s;
+}
+
+/* ── Nutri-score active filter ── */
+.nutri-score-filter.active-filter {
+  outline: 2px solid #059669;
+  outline-offset: 2px;
+}
+
+/* ── Product card add button ── */
+.add-to-log-btn {
+  transition: all 0.2s;
+}
+
+.add-to-log-btn:active {
+  transform: scale(0.97);
+}
+
+/* ── Weekly chart container ── */
+#weekly-chart {
+  min-height: 16rem;
+}
+
+/* ── Food log item hover ── */
+#logged-items-list > div {
+  transition: all 0.15s;
+}
+
+/* ── Search input ── */
+#search-input,
+#product-search-input,
+#barcode-input {
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+/* ── Recipe card image placeholder ── */
+.recipe-card img {
+  background-color: #f3f4f6;
+}
+
+/* ── Prevent overflow on mobile ── */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* ── Meal detail content scrollable on small screens ── */
+@media (max-width: 1024px) {
+  #meal-details .grid.grid-cols-1.lg\\:grid-cols-3 {
+    grid-template-columns: 1fr;
+  }
+
+  #meal-details .sticky {
+    position: static;
+  }
+}
