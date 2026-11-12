@@ -477,6 +477,12 @@ class App {
       }
 
       UIRenderer.renderNutritionFacts(container, result, result.servings);
+      if (result.considered) {
+        const note = document.createElement('p');
+        note.className = 'text-xs text-gray-400 mt-4';
+        note.textContent = `Estimate from USDA FoodData Central, based on ${result.matched} of ${result.considered} ingredients (servings assumed).`;
+        container.appendChild(note);
+      }
 
       // Store nutrition with current meal for logging
       this._currentNutrition = result;
@@ -484,7 +490,7 @@ class App {
       let msg = 'Nutrition analysis failed.';
       if (err.status === 401) msg = 'Nutrition API key missing.';
       else if (err.status === 403) msg = 'Nutrition API key invalid.';
-      else if (err.status === 400) msg = 'Could not analyze one or more ingredients.';
+      else if (err.status === 400 || err.status === 422) msg = 'Could not estimate nutrition for this recipe.';
       else if (err.status === 429 || err.status >= 500) msg = 'Nutrition data is unavailable right now. Please try again later.';
       UIRenderer.renderNutritionError(container, msg);
       const heroCal = document.getElementById('hero-calories'); if (heroCal) heroCal.textContent = 'Calories unavailable';
