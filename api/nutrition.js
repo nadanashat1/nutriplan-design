@@ -138,7 +138,7 @@ async function findFood(name, key) {
     const desc = String(f.description || '');
     const all = new Set(tokens(desc));
     if (!want.every((w) => all.has(w))) continue;
-    const junk = /\b(ice creams?|candies|candy|cookie|school lunch|restaurant|babyfood|nugget|fast food|puffed|beverages|snacks|cereals|pie|cake|sandwich)\b/i;
+    const junk = /\b(ice creams?|candies|candy|cookie|school lunch|restaurant|babyfood|nugget|fast food|puffed|beverages|snacks|cereals|pie|cake|sandwich|flour|bran|germ|syrup)\b/i;
     if (junk.test(desc) && !junk.test(query)) continue;
     const first = tokens(desc.split(',')[0]);
     let score = 0;
@@ -146,6 +146,7 @@ async function findFood(name, key) {
     else if (want.every((w) => first.includes(w))) score += 5;
     if (/\braw\b/i.test(desc)) score += 2;
     if (/\b(dehydrated|frozen|canned|dried|cooked|babyfood|restaurant|nugget|cookie|candies|school lunch)\b/i.test(desc) && !/\b(dehydrated|frozen|canned|dried|cooked)\b/i.test(query)) score -= 4;
+    if (f.dataType === 'SR Legacy') score += 1; // SR Legacy records carry the full nutrient set
     score -= desc.length / 60;
     if (score > bestScore) { bestScore = score; best = f; }
   }
@@ -195,6 +196,11 @@ function per100g(food) {
   for (const [field, number] of Object.entries(NUTRIENTS)) {
     const n = (food.foodNutrients || []).find((x) => String(x.nutrientNumber) === number);
     out[field] = n && Number(n.value) ? Number(n.value) : 0;
+  }
+  if (!out.calories) {
+    // Some records give energy as Atwater values (957/958) or not at all.
+    const alt = (food.foodNutrients || []).find((x) => ['957', '958'].includes(String(x.nutrientNumber)) && Number(x.value));
+    out.calories = alt ? Number(alt.value) : 4 * out.protein + 4 * out.carbs + 9 * out.fat;
   }
   return out;
 }
