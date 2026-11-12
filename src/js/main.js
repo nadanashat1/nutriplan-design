@@ -460,6 +460,21 @@ class App {
       );
 
       const result = await NutritionService.analyze(meal.name, ingredientStrings);
+
+      // The service can answer 200 with every value at 0 when the food-data
+      // lookup was rate limited or nothing matched. Treat that as unavailable
+      // instead of showing 0 calories as if it were real data.
+      const per = result.perServing || {};
+      const tot = result.totals || result.total || {};
+      const hasData = [per.calories, tot.calories, per.protein, tot.protein, per.carbs, tot.carbs]
+        .some((v) => Number(v) > 0);
+      if (!hasData) {
+        UIRenderer.renderNutritionError(container, 'Nutrition data is unavailable right now. Please try again later.');
+        const heroCal = document.getElementById('hero-calories'); if (heroCal) heroCal.textContent = 'Calories unavailable';
+        this._currentNutrition = null;
+        return;
+      }
+
       UIRenderer.renderNutritionFacts(container, result, result.servings);
 
       // Store nutrition with current meal for logging
@@ -469,7 +484,9 @@ class App {
       if (err.status === 401) msg = 'Nutrition API key missing.';
       else if (err.status === 403) msg = 'Nutrition API key invalid.';
       else if (err.status === 400) msg = 'Could not analyze one or more ingredients.';
+      else if (err.status === 429 || err.status >= 500) msg = 'Nutrition data is unavailable right now. Please try again later.';
       UIRenderer.renderNutritionError(container, msg);
+      const heroCal = document.getElementById('hero-calories'); if (heroCal) heroCal.textContent = 'Calories unavailable';
       this._currentNutrition = null;
     }
   }
