@@ -263,7 +263,7 @@ module.exports = async function handler(req, res) {
     }
     return res.status(200).json({
       success: true,
-      data: { servings, totals: roundedTotals, perServing, matched, considered, ingredients: details },
+      data: { servings, totals: roundedTotals, perServing, matched, considered, listed: ingredients.length, ingredients: details },
     });
   } catch (err) {
     const status = err.status === 429 ? 429 : 502;
