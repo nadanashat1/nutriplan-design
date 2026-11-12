@@ -1,6 +1,7 @@
 import { ApiService } from './ApiService.js';
 
-const USDA_API_KEY = 'USDA_API_KEY';
+// USDA's public demo key (documented at api.data.gov, rate-limited, not a secret).
+const USDA_API_KEY = 'DEMO_KEY';
 
 
 export class NutritionService {
