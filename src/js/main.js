@@ -452,6 +452,7 @@ class App {
       return;
     }
 
+    this._currentNutrition = null; // never reuse a previous meal's nutrition
     UIRenderer.renderNutritionLoading(container);
 
     try {
@@ -492,6 +493,12 @@ class App {
   }
 
   _logMeal(meal) {
+    // Never log a meal with made-up zero values: if nutrition is not available
+    // (still loading, failed, or rate limited), do not add it to the log.
+    if (!this._currentNutrition) {
+      UIRenderer.toast('Nutrition data is not available for this meal right now, so it was not added to your Food Log.', 'warning');
+      return;
+    }
     const nutrition = this._extractNutritionForLog(this._currentNutrition);
     FoodLog.addEntry({
       type: 'meal',
