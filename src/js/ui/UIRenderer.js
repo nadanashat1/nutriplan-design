@@ -551,7 +551,27 @@ export class UIRenderer {
       showlegend: false,
     };
 
-    Plotly.newPlot(el, [trace], layout, { responsive: true, displayModeBar: false });
+    // Nothing logged this week: show the placeholder instead of an empty chart.
+    if (weeklyData.every((d) => !d.calories)) {
+      try { Plotly.purge(el); } catch (e) { /* not plotted yet */ }
+      el.className = 'h-64 bg-gray-50 rounded-xl flex items-center justify-center';
+      el.removeAttribute('style');
+      el.innerHTML = '<div class="text-center text-gray-400"><i class="fa-solid fa-chart-line text-4xl mb-2"></i><p>Nothing logged yet. Log a meal to see your week.</p></div>';
+      return;
+    }
+
+    // Remove the static placeholder and the flex centering so the chart fills the panel.
+    el.innerHTML = '';
+    el.classList.remove('flex', 'items-center', 'justify-center', 'h-64');
+    el.style.height = '256px';
+    el.style.width = '100%';
+    el.style.overflow = 'hidden';
+    layout.autosize = true;
+    layout.height = 256;
+
+    Plotly.newPlot(el, [trace], layout, { responsive: true, displayModeBar: false }).then(() => {
+      requestAnimationFrame(() => Plotly.Plots.resize(el));
+    });
   }
 
  
