@@ -480,7 +480,7 @@ class App {
       if (result.considered) {
         const note = document.createElement('p');
         note.className = 'text-xs text-gray-400 mt-4';
-        note.textContent = `Rough estimate, not exact: USDA FoodData Central data for ${result.matched} of ${result.considered} ingredients, assuming ${result.servings || 4} servings.`;
+        note.textContent = `Rough estimate, not exact: USDA FoodData Central data for ${result.matched} of ${result.listed || result.considered} listed ingredients (the rest have no quantity or no match), assuming ${result.servings || 4} servings.`;
         container.appendChild(note);
       }
 
