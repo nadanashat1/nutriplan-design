@@ -14,8 +14,14 @@ export class FoodLog {
     localStorage.setItem(FoodLog.STORAGE_KEY, JSON.stringify(data));
   }
 
+  // YYYY-MM-DD in the user's local time zone (not UTC), so the log day matches the clock.
+  static _dateKey(d = new Date()) {
+    const p = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+  }
+
   static _todayKey() {
-    return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+    return FoodLog._dateKey(new Date());
   }
 
   /**
@@ -119,7 +125,7 @@ export class FoodLog {
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
-      const key = d.toISOString().slice(0, 10);
+      const key = FoodLog._dateKey(d);
       result.push({ date: key, ...FoodLog.getDailyTotals(key) });
     }
     return result;
